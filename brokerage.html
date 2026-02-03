@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EPF Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #185a9d;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .info-banner {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .info-banner p {
+            color: #2e7d32;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            color: #555;
+            font-weight: 600;
+            font-size: 0.95em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .label-info {
+            font-size: 0.8em;
+            color: #888;
+            font-weight: 400;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #185a9d;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            /*-webkit-appearance: none;*/
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #185a9d;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #185a9d;
+            cursor: pointer;
+            border: none;
+        }
+
+        .value-display {
+            min-width: 120px;
+            text-align: right;
+            color: #185a9d;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #185a9d;
+        }
+
+        .checkbox-group label {
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .results-section {
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .breakdown-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .breakdown-label {
+            font-size: 0.85em;
+            opacity: 0.85;
+            margin-bottom: 5px;
+        }
+
+        .breakdown-value {
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .chart-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 150px;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .bar-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .bar-label {
+            font-size: 0.75em;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px 30px;
+            background: #185a9d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #124576;
+        }
+
+        .year-wise-table {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .year-wise-table h3 {
+            color: #185a9d;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #185a9d;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #e8f5e9;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 5px;
+        }
+
+        .info-box h4 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #333;
+            font-size: 0.9em;
+            line-height: 1.6;
+            margin: 5px 0;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .info-box li {
+            color: #333;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .contribution-breakdown {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .contribution-breakdown h3 {
+            color: #185a9d;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .contribution-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .contribution-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .contribution-title {
+            color: #2e7d32;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .contribution-detail {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .contribution-label {
+            color: #666;
+        }
+
+        .contribution-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EPF Calculator</h1>
+        <p class="subtitle">Employee Provident Fund - Calculate your retirement corpus</p>
+
+        <div class="info-banner">
+            <p><strong>Current EPF Interest Rate:</strong> 8.25% per annum (FY 2023-24)</p>
+            <p><strong>Contribution:</strong> Employee: 12% of Basic + DA | Employer: 12% (3.67% to EPF, 8.33% to EPS)</p>
+            <p><strong>Tax Benefits:</strong> Contributions are tax-deductible under Section 80C (up to ₹1.5 lakh)</p>
+        </div>
+        
+        <div class="calculator-grid">
+            <div class="input-section">
+                <div class="input-group">
+                    <label>
+                        Basic Salary + DA (₹/month)
+                        <span class="label-info">Current monthly</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="range" id="basicSalary" min="5000" max="200000" value="40000" step="1000">
+                        <span class="value-display" id="basicSalaryValue">₹40,000</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        Current Age (Years)
+                        <span class="label-info">Your age now</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="range" id="currentAge" min="18" max="58" value="30" step="1">
+                        <span class="value-display" id="currentAgeValue">30 Years</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        Retirement Age (Years)
+                        <span class="label-info">Planned retirement</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="range" id="retirementAge" min="40" max="65" value="58" step="1">
+                        <span class="value-display" id="retirementAgeValue">58 Years</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        Current EPF Balance (₹)
+                        <span class="label-info">Existing corpus</span>
+                    </label>
+                    <input type="number" id="currentBalance" value="200000" min="0" step="10000">
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        Expected Salary Increment (% p.a.)
+                        <span class="label-info">Annual raise</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="range" id="salaryIncrement" min="0" max="15" value="5" step="0.5">
+                        <span class="value-display" id="salaryIncrementValue">5%</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        EPF Interest Rate (% p.a.)
+                        <span class="label-info">Current: 8.25%</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="range" id="epfRate" min="7" max="12" value="8.25" step="0.25">
+                        <span class="value-display" id="epfRateValue">8.25%</span>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="includeVPF" onchange="calculateEPF()">
+                    <label for="includeVPF">Include VPF (Voluntary Provident Fund)</label>
+                </div>
+
+                <div class="input-group" id="vpfGroup" style="display: none;">
+                    <label>
+                        VPF Contribution (% of Basic)
+                        <span class="label-info">Additional contribution</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="range" id="vpfRate" min="0" max="100" value="0" step="1">
+                        <span class="value-display" id="vpfRateValue">0%</span>
+                    </div>
+                </div>
+
+                <button onclick="calculateEPF()">Calculate EPF Corpus</button>
+            </div>
+
+            <div class="results-section">
+                <div class="result-card">
+                    <div class="result-label">EPF Maturity Amount (at retirement)</div>
+                    <div class="result-value" id="epfMaturity">₹1,85,94,250</div>
+                </div>
+
+                <div class="breakdown-grid">
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">Your Contribution</div>
+                        <div class="breakdown-value" id="employeeContribution">₹24,52,224</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">Employer Contribution</div>
+                        <div class="breakdown-value" id="employerContribution">₹9,01,164</div>
+                    </div>
+                </div>
+
+                <div class="breakdown-grid">
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">Total Interest Earned</div>
+                        <div class="breakdown-value" id="totalInterest">₹1,52,40,862</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-label">Opening Balance</div>
+                        <div class="breakdown-value" id="openingBalance">₹2,00,000</div>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <div class="chart">
+                        <div class="bar-group">
+                            <div class="bar" id="employeeBar" style="height: 0%;"></div>
+                            <div class="bar-label">Your Share</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" id="employerBar" style="height: 0%;"></div>
+                            <div class="bar-label">Employer Share</div>
+                        </div>
+                        <div class="bar-group">
+                            <div class="bar" id="interestBar" style="height: 0%;"></div>
+                            <div class="bar-label">Interest</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contribution-breakdown">
+            <h3>Monthly Contribution Breakdown</h3>
+            <div class="contribution-cards">
+                <div class="contribution-card">
+                    <div class="contribution-title">Employee Contribution (12%)</div>
+                    <div class="contribution-detail">
+                        <span class="contribution-label">Basic Salary:</span>
+                        <span class="contribution-value" id="contribBasic">₹40,000</span>
+                    </div>
+                    <div class="contribution-detail">
+                        <span class="contribution-label">EPF (12%):</span>
+                        <span class="contribution-value" id="contribEPF">₹4,800</span>
+                    </div>
+                    <div class="contribution-detail" id="vpfDetail" style="display: none;">
+                        <span class="contribution-label">VPF:</span>
+                        <span class="contribution-value" id="contribVPF">₹0</span>
+                    </div>
+                    <div class="contribution-detail">
+                        <span class="contribution-label">Total:</span>
+                        <span class="contribution-value" id="contribTotal">₹4,800</span>
+                    </div>
+                </div>
+
+                <div class="contribution-card">
+                    <div class="contribution-title">Employer Contribution (12%)</div>
+                    <div class="contribution-detail">
+                        <span class="contribution-label">EPF (3.67%):</span>
+                        <span class="contribution-value" id="employerEPF">₹1,468</span>
+                    </div>
+                    <div class="contribution-detail">
+                        <span class="contribution-label">EPS (8.33%):</span>
+                        <span class="contribution-value" id="employerEPS">₹3,332</span>
+                    </div>
+                    <div class="contribution-detail">
+                        <span class="contribution-label">Total:</span>
+                        <span class="contribution-value" id="employerTotal">₹4,800</span>
+                    </div>
+                </div>
+
+                <div class="contribution-card">
+                    <div class="contribution-title">Annual Summary</div>
+                    <div class="contribution-detail">
+                        <span class="contribution-label">Your Annual:</span>
+                        <span class="contribution-value" id="annualEmployee">₹57,600</span>
+                    </div>
+                    <div class="contribution-detail">
+                        <span class="contribution-label">Employer Annual:</span>
+                        <span class="contribution-value" id="annualEmployer">₹17,616</span>
+                    </div>
+                    <div class="contribution-detail">
+                        <span class="contribution-label">Total Annual:</span>
+                        <span class="contribution-value" id="annualTotal">₹75,216</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="year-wise-table">
+            <h3>Year-wise EPF Growth</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Age</th>
+                        <th>Monthly Salary</th>
+                        <th>Your Contribution</th>
+                        <th>Employer Contribution</th>
+                        <th>Interest Earned</th>
+                        <th>Closing Balance</th>
+                    </tr>
+                </thead>
+                <tbody id="epfYearWise"></tbody>
+            </table>
+        </div>
+
+        <div class="info-box">
+            <h4>About EPF (Employee Provident Fund)</h4>
+            <p><strong>Key Features:</strong></p>
+            <ul>
+                <li><strong>Mandatory:</strong> For organizations with 20+ employees</li>
+                <li><strong>Employee Share:</strong> 12% of Basic + DA goes entirely to EPF account</li>
+                <li><strong>Employer Share:</strong> 12% total - 3.67% to EPF, 8.33% to EPS (Pension Scheme)</li>
+                <li><strong>Interest:</strong> Calculated monthly, credited annually, compounded yearly</li>
+                <li><strong>Tax Benefits:</strong> EEE (Exempt-Exempt-Exempt) status - contributions, interest, and withdrawals are tax-free</li>
+                <li><strong>VPF (Voluntary PF):</strong> Additional voluntary contribution beyond 12%, gets same interest rate</li>
+                <li><strong>Withdrawal:</strong> Can withdraw after 2 months of unemployment or at retirement (age 58)</li>
+                <li><strong>Partial Withdrawal:</strong> Allowed for specific purposes like medical emergency, house purchase, education</li>
+                <li><strong>UAN:</strong> Universal Account Number stays with you across jobs</li>
+            </ul>
+            <p style="margin-top: 10px;"><strong>Note:</strong> This calculator provides estimates. Actual EPF balance may vary based on salary changes, withdrawals, and interest rate revisions.</p>
+        </div>
+    </div>
+
+    <script>
+        function formatCurrency(amount) {
+            return '₹' + amount.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+        }
+
+        const basicSalary = document.getElementById('basicSalary');
+        const currentAge = document.getElementById('currentAge');
+        const retirementAge = document.getElementById('retirementAge');
+        const salaryIncrement = document.getElementById('salaryIncrement');
+        const epfRate = document.getElementById('epfRate');
+        const includeVPF = document.getElementById('includeVPF');
+        const vpfRate = document.getElementById('vpfRate');
+
+        basicSalary.addEventListener('input', function() {
+            document.getElementById('basicSalaryValue').textContent = formatCurrency(parseFloat(this.value));
+            calculateEPF();
+        });
+
+        currentAge.addEventListener('input', function() {
+            document.getElementById('currentAgeValue').textContent = this.value + ' Years';
+            calculateEPF();
+        });
+
+        retirementAge.addEventListener('input', function() {
+            document.getElementById('retirementAgeValue').textContent = this.value + ' Years';
+            calculateEPF();
+        });
+
+        salaryIncrement.addEventListener('input', function() {
+            document.getElementById('salaryIncrementValue').textContent = this.value + '%';
+            calculateEPF();
+        });
+
+        epfRate.addEventListener('input', function() {
+            document.getElementById('epfRateValue').textContent = this.value + '%';
+            calculateEPF();
+        });
+
+        vpfRate.addEventListener('input', function() {
+            document.getElementById('vpfRateValue').textContent = this.value + '%';
+            calculateEPF();
+        });
+
+        includeVPF.addEventListener('change', function() {
+            const vpfGroup = document.getElementById('vpfGroup');
+            const vpfDetail = document.getElementById('vpfDetail');
+            if (this.checked) {
+                vpfGroup.style.display = 'block';
+                vpfDetail.style.display = 'flex';
+            } else {
+                vpfGroup.style.display = 'none';
+                vpfDetail.style.display = 'none';
+                vpfRate.value = 0;
+                document.getElementById('vpfRateValue').textContent = '0%';
+            }
+        });
+
+        function calculateEPF() {
+            const basic = parseFloat(basicSalary.value);
+            const curAge = parseInt(currentAge.value);
+            const retAge = parseInt(retirementAge.value);
+            const increment = parseFloat(salaryIncrement.value) / 100;
+            const interest = parseFloat(epfRate.value) / 100;
+            const currentBal = parseFloat(document.getElementById('currentBalance').value) || 0;
+            const vpfPercent = includeVPF.checked ? parseFloat(vpfRate.value) / 100 : 0;
+
+            const years = retAge - curAge;
+            if (years <= 0) {
+                alert('Retirement age must be greater than current age');
+                return;
+            }
+
+            let balance = currentBal;
+            let totalEmployeeContrib = 0;
+            let totalEmployerContrib = 0;
+            let totalInterest = 0;
+            let currentSalary = basic;
+            const yearWiseData = [];
+
+            for (let year = 1; year <= years; year++) {
+                const age = curAge + year;
+                let yearEmployeeContrib = 0;
+                let yearEmployerContrib = 0;
+                let yearOpeningBalance = balance;
+
+                // Monthly contributions
+                for (let month = 1; month <= 12; month++) {
+                    // Employee contribution: 12% + VPF
+                    const empContrib = currentSalary * (0.12 + vpfPercent);
+                    // Employer contribution to EPF: 3.67% (8.33% goes to EPS)
+                    const emplerContrib = currentSalary * 0.0367;
+
+                    balance += empContrib + emplerContrib;
+                    yearEmployeeContrib += empContrib;
+                    yearEmployerContrib += emplerContrib;
+                    totalEmployeeContrib += empContrib;
+                    totalEmployerContrib += emplerContrib;
+
+                    // Interest calculated monthly but added at year end
+                }
+
+                // Annual interest
+                const yearInterest = balance * interest;
+                balance += yearInterest;
+                totalInterest += yearInterest;
+
+                yearWiseData.push({
+                    year: year,
+                    age: age,
+                    salary: currentSalary,
+                    employeeContrib: yearEmployeeContrib,
+                    employerContrib: yearEmployerContrib,
+                    interest: yearInterest,
+                    closingBalance: balance
+                });
+
+                // Increment salary for next year
+                currentSalary = currentSalary * (1 + increment);
+            }
+
+            // Update results
+            document.getElementById('epfMaturity').textContent = formatCurrency(balance);
+            document.getElementById('employeeContribution').textContent = formatCurrency(totalEmployeeContrib);
+            document.getElementById('employerContribution').textContent = formatCurrency(totalEmployerContrib);
+            document.getElementById('totalInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('openingBalance').textContent = formatCurrency(currentBal);
+
+            // Update chart
+            updateChart(totalEmployeeContrib, totalEmployerContrib, totalInterest);
+
+            // Update monthly contribution breakdown
+            updateContributionBreakdown(basic, vpfPercent);
+
+            // Update year-wise table
+            updateYearWiseTable(yearWiseData);
+        }
+
+        function updateChart(employee, employer, interest) {
+            const total = employee + employer + interest;
+            const empPercent = (employee / total) * 100;
+            const emplerPercent = (employer / total) * 100;
+            const intPercent = (interest / total) * 100;
+
+            document.getElementById('employeeBar').style.height = empPercent + '%';
+            document.getElementById('employerBar').style.height = emplerPercent + '%';
+            document.getElementById('interestBar').style.height = intPercent + '%';
+        }
+
+        function updateContributionBreakdown(basic, vpfPercent) {
+            const employeeEPF = basic * 0.12;
+            const vpfAmount = basic * vpfPercent;
+            const employeeTotal = employeeEPF + vpfAmount;
+            const employerEPFAmount = basic * 0.0367;
+            const employerEPS = basic * 0.0833;
+            const employerTotal = basic * 0.12;
+
+            document.getElementById('contribBasic').textContent = formatCurrency(basic);
+            document.getElementById('contribEPF').textContent = formatCurrency(employeeEPF);
+            document.getElementById('contribVPF').textContent = formatCurrency(vpfAmount);
+            document.getElementById('contribTotal').textContent = formatCurrency(employeeTotal);
+
+            document.getElementById('employerEPF').textContent = formatCurrency(employerEPFAmount);
+            document.getElementById('employerEPS').textContent = formatCurrency(employerEPS);
+            document.getElementById('employerTotal').textContent = formatCurrency(employerTotal);
+
+            document.getElementById('annualEmployee').textContent = formatCurrency(employeeTotal * 12);
+            document.getElementById('annualEmployer').textContent = formatCurrency(employerEPFAmount * 12);
+            document.getElementById('annualTotal').textContent = formatCurrency((employeeTotal + employerEPFAmount) * 12);
+        }
+
+        function updateYearWiseTable(data) {
+            const tbody = document.getElementById('epfYearWise');
+            tbody.innerHTML = '';
+
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.year}</td>
+                    <td>${row.age}</td>
+                    <td>${formatCurrency(row.salary)}</td>
+                    <td>${formatCurrency(row.employeeContrib)}</td>
+                    <td>${formatCurrency(row.employerContrib)}</td>
+                    <td>${formatCurrency(row.interest)}</td>
+                    <td>${formatCurrency(row.closingBalance)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Initial calculation
+        calculateEPF();
+    </script>
+</body>
+</html>
